@@ -1,8 +1,20 @@
 #import "FlutterDeviceLocalePlugin.h"
-#import <flutter_device_locale/flutter_device_locale-Swift.h>
 
 @implementation FlutterDeviceLocalePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftFlutterDeviceLocalePlugin registerWithRegistrar:registrar];
+  FlutterDeviceLocalePlugin* instance = [[FlutterDeviceLocalePlugin alloc] init];
+
+  FlutterMethodChannel* channel =
+      [FlutterMethodChannel methodChannelWithName:@"flutter_device_locale"
+                                  binaryMessenger:[registrar messenger]];
+  [registrar addMethodCallDelegate:instance channel:channel];
+}
+
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+  if ([call.method isEqualToString:@"deviceLocales"]) {
+    result([NSLocale preferredLanguages]);
+  } else {
+    result(FlutterMethodNotImplemented);
+  }
 }
 @end
